@@ -1,16 +1,18 @@
 # from application import app
 from flask import request, jsonify
-from flask import Flask
+from flask import Flask, make_response
+from flask_cors import CORS
 
 from .decision_engine import engine
 from .accounting_providers import accounting
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/applyloan', methods=['POST'])
 def apply_loan():
     data = request.get_json()
-    loan_amount = data.get("loan_amount")
+    loan_amount = int(data.get("loan_amount"))
     # Extract user-selected accounting software
     selected_provider = data.get('selected_provider')
 
@@ -32,8 +34,9 @@ def apply_loan():
 
     # Simulate interaction with decision engine
     approval = engine.simulate_decision_engine_interaction(decision_data)
-
-    return jsonify({"approval": approval})
+    response = make_response(jsonify({"approval": approval}))
+    response.headers['Content-Type'] = 'application/json'
+    return response
 
 
 def calculate_pre_assessment(balance_sheet, loan_amount):

@@ -1,9 +1,10 @@
 # Use the official Python image
 FROM python:3.9
 
+RUN apt-get update && apt-get install -y git
+
 # Set environment variables (if needed)
 ENV FLASK_APP=main.py
-ENV FLASK_RUN_HOST=0.0.0.0
 
 # Set the working directory
 WORKDIR /app
@@ -19,4 +20,4 @@ COPY . .
 EXPOSE 5000
 
 # Command to run the application
-CMD ["flask", "run"]
+CMD ["flask", "run", "--host=0.0.0.0"]
